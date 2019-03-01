@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">EggTimer</string>
+    <string name="eggtivity_soft_boiled">Blødkogt</string>
+    <string name="eggtivity_medium_boiled">Smilende</string>
+    <string name="eggtivity_hard_boiled">Hårdkogt</string>
+    <string name="eggtivity_title">Vælg æg</string>
+    <string name="eggtivity_timer_text">Timer mm:ss</string>
+    <string name="eggtivity_start">Start</string>
+    <string name="eggtivity_stop">Stop</string>
+    <string name="eggtivity_default_time">00:00</string>
 </resources>
