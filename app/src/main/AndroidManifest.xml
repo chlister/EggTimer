@@ -9,13 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EggSVGActivity"></activity>
-        <activity android:name=".EggTivity">
+        <activity android:name=".EggSVGActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".EggTivity">
+
         </activity>
         <activity android:name=".EggActivity"></activity>
         <activity android:name=".MainActivity" />
