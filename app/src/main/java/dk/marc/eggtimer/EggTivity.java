@@ -1,6 +1,5 @@
 package dk.marc.eggtimer;
 
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,21 +7,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.Locale;
+import static dk.marc.eggtimer.Utility.TimeConverter.getCurrentSelectedMillisAsString;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class EggTivity extends AppCompatActivity {
 
-    private static final long START_TIME_SOFT_BOILED_IN_MILLIS = 300000; // 5 mins
+    private static final long START_TIME_SOFT_BOILED_IN_MILLIS = 3000; // 5 mins
     private static final long START_TIME_MEDIUM_BOILED_IN_MILLIS = 420000; // 7 mins
     private static final long START_TIME_HARD_BOILED_IN_MILLIS = 600000; // 10 mins
 
     private long mCurrentTimeSelected;
     private Button mButtonStartStop;
     private TextView mTextViewCountDown;
-    private CountDownTimer mCountDownTimer;
-    private boolean isRunning;
-    private long timer;
+    private static boolean isRunning;
+    private static long timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +34,7 @@ public class EggTivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+        // Save variables which we would want to save
         outState.putLong("millisLeft", timer);
         outState.putBoolean("timerRunning", isRunning);
     }
@@ -45,15 +44,18 @@ public class EggTivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         // Get the values needed from saved state
-        isRunning = savedInstanceState.getBoolean("timerRunning");
         timer = savedInstanceState.getLong("millisLeft");
+        System.out.println("Current timer: " + timer);
+        isRunning = savedInstanceState.getBoolean("timerRunning");
+        System.out.println("Is the application running? " + isRunning);
         // We need to set the text again
         updateCountDownText();
 
         // if the timer is running we need to start it again from where it left off
         if (isRunning) {
-            startTimer(timer);
             mButtonStartStop.setEnabled(true);
+//            mButtonStartStop.setText(R.string.eggtivity_stop);
+            startTimer(timer);
         }
     }
 
@@ -92,33 +94,26 @@ public class EggTivity extends AppCompatActivity {
 
 
     /**
-     * Used for updating the text in the view.
+     * Used for updating the timer text.
      */
     private void updateCountDownText() {
-        int minutes = (int) (timer / 1000) / 60;
-        int seconds = (int) (timer / 1000) % 60;
-        String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+        String timeLeftFormatted = getCurrentSelectedMillisAsString(timer);
 
         mTextViewCountDown.setText(timeLeftFormatted);
     }
 
-    private String getCurrentSelectedMillisAsString(long selected) {
-        int minutes = (int) (selected / 1000) / 60;
-        int seconds = (int) (selected / 1000) % 60;
-        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
-    }
 
     /**
      * On clicked method.
      * Starts and stops the timer.
      *
-     * @param view
+     * @param view View
      */
     public void OnButtonStartStopClicked(View view) {
         if (!isRunning)
             startTimer(mCurrentTimeSelected);
         else
-            stopTimer();
+            timer = 0;
     }
 
     /**
@@ -129,7 +124,6 @@ public class EggTivity extends AppCompatActivity {
     private void startTimer(long timeInMillis) {
 
         timer = timeInMillis;
-        // TODO: Update buttontext
         mButtonStartStop.setText(R.string.eggtivity_stop);
         Handler handler = new Handler();
         handler.post(new Runnable() {
@@ -139,10 +133,9 @@ public class EggTivity extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        timer -= 1000;
-                        updateCountDownText();
-
-                        if (timer <= 0) {
+                            timer -= 1000;
+                            updateCountDownText();
+                        if (timer <= 0 || !isRunning) {
                             stopTimer();
                         } else {
                             handler.postDelayed(this, 1000);
@@ -161,6 +154,7 @@ public class EggTivity extends AppCompatActivity {
      */
     private void stopTimer() {
         mTextViewCountDown.setText(R.string.eggtivity_default_time);
+        mButtonStartStop.setText(R.string.eggtivity_start);
         isRunning = !isRunning;
         mButtonStartStop.setEnabled(false);
     }
