@@ -7,5 +7,10 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <style name="EggTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:colorPrimary">@color/colorLightGrayYolk</item>
+        <item name="android:colorPrimaryDark">@color/colorYolk</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+    </style>
 
 </resources>

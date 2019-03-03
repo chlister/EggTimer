@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorTransGrayYolk"
     tools:context=".EggSVGActivity">
 
     <ImageButton
@@ -92,11 +93,12 @@
 
     <Button
         android:id="@+id/button_start"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
+        android:background="@drawable/round_button"
         android:enabled="false"
         android:onClick="OnButtonStartStopClicked"
         android:text="@string/eggtivity_start"
