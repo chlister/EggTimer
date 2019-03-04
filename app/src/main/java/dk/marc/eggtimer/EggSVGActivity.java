@@ -11,7 +11,7 @@ import static dk.marc.eggtimer.Utility.TimeConverter.getCurrentSelectedMillisAsS
 
 public class EggSVGActivity extends AppCompatActivity {
 
-    private static final long START_TIME_SOFT_BOILED_IN_MILLIS = 3000; // 5 mins
+    private static final long START_TIME_SOFT_BOILED_IN_MILLIS = 30000; // 5 mins
     private static final long START_TIME_MEDIUM_BOILED_IN_MILLIS = 420000; // 7 mins
     private static final long START_TIME_HARD_BOILED_IN_MILLIS = 600000; // 10 mins
 
