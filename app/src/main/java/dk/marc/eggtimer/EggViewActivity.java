@@ -1,20 +1,21 @@
 package dk.marc.eggtimer;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import static dk.marc.eggtimer.Utility.TimeConverter.getCurrentSelectedMillisAsString;
 
-public class EggSVGActivity extends AppCompatActivity {
+public class EggViewActivity extends AppCompatActivity implements EggTimerListener {
 
-    private static final long START_TIME_SOFT_BOILED_IN_MILLIS = 30000; // 5 mins
+    private static final long START_TIME_SOFT_BOILED_IN_MILLIS = 300000; // 5 mins
     private static final long START_TIME_MEDIUM_BOILED_IN_MILLIS = 420000; // 7 mins
     private static final long START_TIME_HARD_BOILED_IN_MILLIS = 600000; // 10 mins
 
+    private EggTimer eggTimer;
     private long mCurrentTimeSelected;
     private Button mButtonStartStop;
     private TextView mTextViewCountDown;
@@ -31,11 +32,14 @@ public class EggSVGActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
         // Save variables which we would want to save
         outState.putLong("millisLeft", timer);
         outState.putBoolean("timerRunning", isRunning);
+        eggTimer.resetTimer();
+        if (eggTimer != null) {
+            stopTimer();
+        }
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -47,13 +51,9 @@ public class EggSVGActivity extends AppCompatActivity {
         System.out.println("Current timer: " + timer);
         isRunning = savedInstanceState.getBoolean("timerRunning");
         System.out.println("Is the application running? " + isRunning);
-        // We need to set the text again
-        updateCountDownText();
-
         // if the timer is running we need to start it again from where it left off
         if (isRunning) {
             mButtonStartStop.setEnabled(true);
-//            mButtonStartStop.setText(R.string.eggtivity_stop);
             startTimer(timer);
         }
     }
@@ -95,8 +95,8 @@ public class EggSVGActivity extends AppCompatActivity {
     /**
      * Used for updating the timer text.
      */
-    private void updateCountDownText() {
-        String timeLeftFormatted = getCurrentSelectedMillisAsString(timer);
+    private void updateCountDownText(long timeLeft) {
+        String timeLeftFormatted = getCurrentSelectedMillisAsString(timeLeft);
 
         mTextViewCountDown.setText(timeLeftFormatted);
     }
@@ -110,9 +110,10 @@ public class EggSVGActivity extends AppCompatActivity {
      */
     public void OnButtonStartStopClicked(View view) {
         if (!isRunning)
+
             startTimer(mCurrentTimeSelected);
         else
-            timer = 0;
+            eggTimer.resetTimer();
     }
 
     /**
@@ -121,30 +122,12 @@ public class EggSVGActivity extends AppCompatActivity {
      * @param timeInMillis <i>long</i> milliseconds
      */
     private void startTimer(long timeInMillis) {
-
+        isRunning = true;
         timer = timeInMillis;
         mButtonStartStop.setText(R.string.eggtivity_stop);
-        Handler handler = new Handler();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        timer -= 1000;
-                        updateCountDownText();
-                        if (timer <= 0 || !isRunning) {
-                            stopTimer();
-                        } else {
-                            handler.postDelayed(this, 1000);
-                        }
-                    }
-                }, 1000);
-            }
-        });
-        isRunning = !isRunning;
-        mButtonStartStop.setText(R.string.eggtivity_stop);
+        eggTimer = new EggTimer(timeInMillis);
+        eggTimer.addListener(this);
+        eggTimer.start();
     }
 
     /**
@@ -152,9 +135,31 @@ public class EggSVGActivity extends AppCompatActivity {
      * the boolean isRunning is set to false
      */
     private void stopTimer() {
+        eggTimer.removeListener(this);
         mTextViewCountDown.setText(R.string.eggtivity_default_time);
         mButtonStartStop.setText(R.string.eggtivity_start);
-        isRunning = !isRunning;
+        isRunning = false;
         mButtonStartStop.setEnabled(false);
+    }
+
+    @Override
+    public void onCountDown(final long timeLeft) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                timer = timeLeft;
+                updateCountDownText(timeLeft);
+            }
+        });
+    }
+
+    @Override
+    public void onEggTimerStopped() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                stopTimer();
+            }
+        });
     }
 }

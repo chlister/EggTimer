@@ -9,27 +9,27 @@
 
     <ImageButton
         android:id="@+id/button_soft"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-
+        android:layout_width="0sp"
+        android:layout_height="0sp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@color/colorTransparent"
         android:contentDescription="@string/eggtivity_soft_boiled"
         android:onClick="onButtonEggSelectedClicked"
         android:scaleType="centerInside"
         android:src="@drawable/easter_egg_with_polka_dots"
         android:text="@string/eggtivity_soft_boiled"
+        app:layout_constraintBottom_toTopOf="@+id/text_timer"
         app:layout_constraintEnd_toStartOf="@+id/button_medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/EggActivity_Title" />
 
     <ImageButton
         android:id="@+id/button_medium"
-        android:layout_width="0dp"
-
-        android:layout_height="wrap_content"
+        android:layout_width="0sp"
+        android:layout_height="0sp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -39,15 +39,15 @@
         android:scaleType="centerInside"
         android:src="@drawable/easter_egg_with_scale_pattern"
         android:text="@string/eggtivity_medium_boiled"
+        app:layout_constraintBottom_toTopOf="@+id/text_timer"
         app:layout_constraintEnd_toStartOf="@+id/button_hard"
         app:layout_constraintStart_toEndOf="@+id/button_soft"
         app:layout_constraintTop_toBottomOf="@+id/EggActivity_Title" />
 
     <ImageButton
         android:id="@+id/button_hard"
-        android:layout_width="0dp"
-
-        android:layout_height="wrap_content"
+        android:layout_width="0sp"
+        android:layout_height="0sp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -57,6 +57,7 @@
         android:scaleType="centerInside"
         android:src="@drawable/easter_egg_with_swirls"
         android:text="@string/eggtivity_hard_boiled"
+        app:layout_constraintBottom_toTopOf="@+id/text_timer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button_medium"
         app:layout_constraintTop_toBottomOf="@+id/EggActivity_Title" />
@@ -80,7 +81,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/eggtivity_default_time"
@@ -88,16 +88,15 @@
         android:textSize="36sp"
         app:layout_constraintBottom_toTopOf="@+id/button_start"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_medium" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/button_start"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0sp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/round_button"
         android:enabled="false"
         android:onClick="OnButtonStartStopClicked"

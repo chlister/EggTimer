@@ -1,39 +1,68 @@
 package dk.marc.eggtimer;
 
+import java.util.ArrayList;
+
 public class EggTimer extends Thread {
-    private long timeInMillis;
-    private volatile boolean bRunning;
+    private volatile long timeLeft;
+    private ArrayList<EggTimerListener> listeners = new ArrayList<>();
 
-    public boolean isbRunning() {
-        return bRunning;
+    //region Getters&Setters
+
+    public long getTimeLeft() {
+        return timeLeft;
     }
 
-    public void setbRunning(boolean bRunning) {
-        this.bRunning = bRunning;
+    public void setTimeLeft(long timeLeft) {
+        this.timeLeft = timeLeft;
     }
-
-    public long getTimeInMillis() {
-        return timeInMillis;
-    }
-
-    public void setTimeInMillis(long timeInMillis) {
-        this.timeInMillis = timeInMillis;
-    }
-
+    //endregion
 
     @Override
     public void run() {
-        setbRunning(true);
-        while (timeInMillis <= 0) {
-            if (!bRunning)
-                break;
-            // wait a sec
-            timeInMillis -= 1000;
-            System.out.println("Running. Time left: " + timeInMillis);
+        System.out.println("Hello from Thread " + Thread.currentThread().getName());
+        do {
+            timeLeft -= 1000;
+            try {
+                notifyPropertyChanged(timeLeft);
+                System.out.println("Current time is: " + timeLeft);
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } while (timeLeft > 0);
+        notifyTimerStopped();
+
+    }
+
+    private void notifyTimerStopped() {
+        for (EggTimerListener l : listeners) {
+            l.onEggTimerStopped();
         }
     }
 
-    public EggTimer(long timeInMillis) {
-        this.timeInMillis = timeInMillis;
+    private void notifyPropertyChanged(long timeLeft) {
+        for (EggTimerListener l : listeners) {
+            l.onCountDown(timeLeft);
+        }
     }
+
+    public EggTimer(long timeLeft) {
+        this.timeLeft = timeLeft;
+    }
+
+    public void resetTimer() {
+        timeLeft = 0;
+        notifyPropertyChanged(timeLeft);
+    }
+
+    public void addListener(EggTimerListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeListener(EggTimerListener listener) {
+        listeners.remove(listener);
+    }
+
+
 }
+
