@@ -12,17 +12,20 @@
         android:theme="@style/EggTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".EggSVGActivity">
+
+        </activity>
+        <activity android:name=".EggTivity">
+
+        </activity>
+        <activity android:name=".EggActivity"/>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".EggViewActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EggTivity">
-
-        </activity>
-        <activity android:name=".EggActivity"></activity>
-        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
