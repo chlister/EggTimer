@@ -6,6 +6,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONObject;
+
 import static dk.marc.eggtimer.Utility.TimeConverter.getCurrentSelectedMillisAsString;
 
 public class EggViewMVP extends AppCompatActivity implements EggTimerPresenter.View {
@@ -14,11 +19,10 @@ public class EggViewMVP extends AppCompatActivity implements EggTimerPresenter.V
     private static final long START_TIME_MEDIUM_BOILED_IN_MILLIS = 420000; // 7 mins
     private static final long START_TIME_HARD_BOILED_IN_MILLIS = 600000; // 10 mins
 
-    private EggTimerPresenter presenter;
+    private static EggTimerPresenter presenter;
     private long mCurrentTimeSelected;
     private Button mButtonStartStop;
     private TextView mTextViewCountDown;
-    private EggState state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +30,8 @@ public class EggViewMVP extends AppCompatActivity implements EggTimerPresenter.V
         setContentView(R.layout.activity_egg_svg);
         mButtonStartStop = findViewById(R.id.button_start);
         mTextViewCountDown = findViewById(R.id.timer_value);
-        presenter = new EggTimerPresenter(this);
-        if (savedInstanceState != null)
-            state = (EggState.valueOf(savedInstanceState.getString("state")));
-        else
-            state = EggState.STOPPED;
-        System.out.println("Current eggstate from OnCreate: " + state.name());
+        if (presenter == null)
+            presenter = new EggTimerPresenter(this);
     }
 
     @Override
@@ -39,16 +39,14 @@ public class EggViewMVP extends AppCompatActivity implements EggTimerPresenter.V
         // Save variables which we would want to save
         super.onSaveInstanceState(outState);
         // Save the egg state
-        outState.putString("state", state.name());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        state = (EggState.valueOf(savedInstanceState.getString("state")));
-        if (state == EggState.RUNNING){
-            // TODO: restore the view
-        }
+
+        // TODO: restore the view
+        presenter.setView(this);
     }
 
     /**
@@ -57,7 +55,7 @@ public class EggViewMVP extends AppCompatActivity implements EggTimerPresenter.V
      * @param view View
      */
     public void onButtonEggSelectedClicked(View view) {
-        if (!(state == EggState.RUNNING || state == EggState.PAUSED)) {
+        if (!(presenter.getState() == EggState.RUNNING || presenter.getState() == EggState.PAUSED)) {
             switch (view.getId()) {
                 case R.id.button_soft:
                     // Enable start_button
@@ -102,7 +100,7 @@ public class EggViewMVP extends AppCompatActivity implements EggTimerPresenter.V
      * @param view View
      */
     public void OnButtonStartStopClicked(View view) {
-        if (!presenter.getIsRunning()) {
+        if (presenter.getState() != EggState.RUNNING) {
             startTimer(mCurrentTimeSelected);
         } else
             presenter.stop();
@@ -114,8 +112,6 @@ public class EggViewMVP extends AppCompatActivity implements EggTimerPresenter.V
      * @param timeInMillis <i>long</i> milliseconds
      */
     private void startTimer(long timeInMillis) {
-        state = EggState.RUNNING;
-        System.out.println(state.name());
         mButtonStartStop.setText(R.string.eggtivity_stop);
         presenter.start(timeInMillis);
     }
@@ -126,8 +122,6 @@ public class EggViewMVP extends AppCompatActivity implements EggTimerPresenter.V
      */
     private void stopTimer() {
         System.out.println("Am i resetting this?");
-        state = EggState.STOPPED;
-        System.out.println(state.name());
         mCurrentTimeSelected = 0;
         mTextViewCountDown.setText(R.string.eggtivity_default_time);
         mButtonStartStop.setText(R.string.eggtivity_start);

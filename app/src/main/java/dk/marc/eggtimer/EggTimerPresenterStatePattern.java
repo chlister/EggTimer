@@ -1,7 +1,7 @@
 package dk.marc.eggtimer;
 
 @SuppressWarnings("WeakerAccess")
-public class EggTimerPresenter implements EggTimerListener {
+public class EggTimerPresenterStatePattern implements EggTimerListener {
     private View view;
     private EggState state;
     private long timer;
@@ -22,7 +22,7 @@ public class EggTimerPresenter implements EggTimerListener {
     }
     //endregion
 
-    public EggTimerPresenter(View view) {
+    public EggTimerPresenterStatePattern(View view) {
         this.view = view;
         timer = 0;
         state = EggState.STOPPED;
