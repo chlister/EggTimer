@@ -125,7 +125,6 @@ public class EggViewActivity extends AppCompatActivity implements EggTimerListen
         isRunning = true;
         timer = timeInMillis;
         mButtonStartStop.setText(R.string.eggtivity_stop);
-        // TODO: Implement EggTimer
         eggTimer = new EggTimer(timeInMillis);
         eggTimer.addListener(this);
         eggTimer.start();
