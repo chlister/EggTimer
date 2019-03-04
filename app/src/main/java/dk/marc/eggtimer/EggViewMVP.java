@@ -121,7 +121,6 @@ public class EggViewMVP extends AppCompatActivity implements EggTimerPresenter.V
      * the boolean isRunning is set to false
      */
     private void stopTimer() {
-        System.out.println("Am i resetting this?");
         mCurrentTimeSelected = 0;
         mTextViewCountDown.setText(R.string.eggtivity_default_time);
         mButtonStartStop.setText(R.string.eggtivity_start);
