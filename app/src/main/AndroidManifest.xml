@@ -20,6 +20,9 @@
         <activity android:name=".EggActivity"/>
         <activity android:name=".MainActivity" />
         <activity android:name=".EggViewActivity" >
+
+        </activity>
+        <activity android:name=".EggViewMVP" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

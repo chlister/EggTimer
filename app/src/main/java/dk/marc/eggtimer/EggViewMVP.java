@@ -1,7 +1,6 @@
 package dk.marc.eggtimer;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -9,18 +8,17 @@ import android.widget.TextView;
 
 import static dk.marc.eggtimer.Utility.TimeConverter.getCurrentSelectedMillisAsString;
 
-public class EggViewActivity extends AppCompatActivity implements EggTimerListener {
+public class EggViewMVP extends AppCompatActivity implements EggTimerPresenter.View {
 
     private static final long START_TIME_SOFT_BOILED_IN_MILLIS = 300000; // 5 mins
     private static final long START_TIME_MEDIUM_BOILED_IN_MILLIS = 420000; // 7 mins
     private static final long START_TIME_HARD_BOILED_IN_MILLIS = 600000; // 10 mins
 
-    private EggTimer eggTimer;
+    private EggTimerPresenter presenter;
     private long mCurrentTimeSelected;
     private Button mButtonStartStop;
     private TextView mTextViewCountDown;
-    private static boolean isRunning;
-    private static long timer;
+    private EggState state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,31 +26,28 @@ public class EggViewActivity extends AppCompatActivity implements EggTimerListen
         setContentView(R.layout.activity_egg_svg);
         mButtonStartStop = findViewById(R.id.button_start);
         mTextViewCountDown = findViewById(R.id.timer_value);
+        presenter = new EggTimerPresenter(this);
+        if (savedInstanceState != null)
+            state = (EggState.valueOf(savedInstanceState.getString("state")));
+        else
+            state = EggState.STOPPED;
+        System.out.println("Current eggstate from OnCreate: " + state.name());
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // Save variables which we would want to save
-        outState.putLong("millisLeft", timer);
-        outState.putBoolean("timerRunning", isRunning);
-        eggTimer.resetTimer();
-        if (eggTimer != null) {
-            stopTimer();
-        }
         super.onSaveInstanceState(outState);
+        // Save the egg state
+        outState.putString("state", state.name());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-
-        // Get the values needed from saved state
-        timer = savedInstanceState.getLong("millisLeft");
-        isRunning = savedInstanceState.getBoolean("timerRunning");
-        // if the timer is running we need to start it again from where it left off
-        if (isRunning) {
-            mButtonStartStop.setEnabled(true);
-            startTimer(timer);
+        state = (EggState.valueOf(savedInstanceState.getString("state")));
+        if (state == EggState.RUNNING){
+            // TODO: restore the view
         }
     }
 
@@ -62,7 +57,7 @@ public class EggViewActivity extends AppCompatActivity implements EggTimerListen
      * @param view View
      */
     public void onButtonEggSelectedClicked(View view) {
-        if (!isRunning) {
+        if (!(state == EggState.RUNNING || state == EggState.PAUSED)) {
             switch (view.getId()) {
                 case R.id.button_soft:
                     // Enable start_button
@@ -107,11 +102,10 @@ public class EggViewActivity extends AppCompatActivity implements EggTimerListen
      * @param view View
      */
     public void OnButtonStartStopClicked(View view) {
-        if (!isRunning)
-
+        if (!presenter.getIsRunning()) {
             startTimer(mCurrentTimeSelected);
-        else
-            eggTimer.resetTimer();
+        } else
+            presenter.stop();
     }
 
     /**
@@ -120,12 +114,10 @@ public class EggViewActivity extends AppCompatActivity implements EggTimerListen
      * @param timeInMillis <i>long</i> milliseconds
      */
     private void startTimer(long timeInMillis) {
-        isRunning = true;
-        timer = timeInMillis;
+        state = EggState.RUNNING;
+        System.out.println(state.name());
         mButtonStartStop.setText(R.string.eggtivity_stop);
-        eggTimer = new EggTimer(timeInMillis);
-        eggTimer.addListener(this);
-        eggTimer.start();
+        presenter.start(timeInMillis);
     }
 
     /**
@@ -133,20 +125,21 @@ public class EggViewActivity extends AppCompatActivity implements EggTimerListen
      * the boolean isRunning is set to false
      */
     private void stopTimer() {
-        eggTimer.removeListener(this);
+        System.out.println("Am i resetting this?");
+        state = EggState.STOPPED;
+        System.out.println(state.name());
+        mCurrentTimeSelected = 0;
         mTextViewCountDown.setText(R.string.eggtivity_default_time);
         mButtonStartStop.setText(R.string.eggtivity_start);
-        isRunning = false;
         mButtonStartStop.setEnabled(false);
     }
 
     @Override
-    public void onCountDown(final long timeLeft) {
+    public void onCountDown(final long time) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                timer = timeLeft;
-                updateCountDownText(timeLeft);
+                updateCountDownText(time);
             }
         });
     }
@@ -156,6 +149,7 @@ public class EggViewActivity extends AppCompatActivity implements EggTimerListen
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                System.out.println("Hello from this thread " + Thread.currentThread().getName());
                 stopTimer();
             }
         });
