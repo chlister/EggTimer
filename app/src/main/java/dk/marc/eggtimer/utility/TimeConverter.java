@@ -1,4 +1,4 @@
-package dk.marc.eggtimer.Utility;
+package dk.marc.eggtimer.utility;
 
 import java.util.Locale;
 

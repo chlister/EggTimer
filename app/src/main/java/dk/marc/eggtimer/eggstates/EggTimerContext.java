@@ -1,4 +1,4 @@
-package dk.marc.eggtimer.EggStates;
+package dk.marc.eggtimer.eggstates;
 
 import dk.marc.eggtimer.EggTimer;
 import dk.marc.eggtimer.EggTimerListener;
@@ -8,9 +8,6 @@ public class EggTimerContext {
     private EggTimer timer;
 
     //region Getters&Setters
-    public EggTimerStates getCurrentState() {
-        return currentState;
-    }
 
     void setCurrentState(EggTimerStates state) {
         currentState = state;

@@ -1,13 +1,12 @@
 package dk.marc.eggtimer;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import static dk.marc.eggtimer.Utility.TimeConverter.getCurrentSelectedMillisAsString;
+import static dk.marc.eggtimer.utility.TimeConverter.getCurrentSelectedMillisAsString;
 
 public class EggViewActivity extends AppCompatActivity implements EggTimerListener {
 

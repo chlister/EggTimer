@@ -1,4 +1,4 @@
-package dk.marc.eggtimer.EggStates;
+package dk.marc.eggtimer.eggstates;
 
 public class EggTimerRunningState implements EggTimerStates {
     @Override

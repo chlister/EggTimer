@@ -1,4 +1,4 @@
-package dk.marc.eggtimer.EggStates;
+package dk.marc.eggtimer.eggstates;
 
 public interface EggTimerStates {
     void start(EggTimerContext context,long timeToCount);

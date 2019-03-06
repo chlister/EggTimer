@@ -6,12 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.json.JSONObject;
-
-import static dk.marc.eggtimer.Utility.TimeConverter.getCurrentSelectedMillisAsString;
+import static dk.marc.eggtimer.utility.TimeConverter.getCurrentSelectedMillisAsString;
 
 public class EggViewMVP extends AppCompatActivity implements EggTimerPresenter.View {
 

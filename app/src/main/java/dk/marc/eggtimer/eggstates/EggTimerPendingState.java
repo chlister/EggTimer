@@ -1,6 +1,4 @@
-package dk.marc.eggtimer.EggStates;
-
-import dk.marc.eggtimer.EggTimer;
+package dk.marc.eggtimer.eggstates;
 
 public class EggTimerPendingState implements EggTimerStates {
 
