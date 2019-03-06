@@ -8,11 +8,10 @@ public class EggTimer extends Thread {
 
     //region Getters&Setters
 
-    @Deprecated
     public long getTimeLeft() {
         return timeLeft;
     }
-    @Deprecated
+
     public void setTimeLeft(long timeLeft) {
         this.timeLeft = timeLeft;
     }
